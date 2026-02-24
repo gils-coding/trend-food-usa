@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trend Food USA — Trending Food Spots Across America</title>
+  <meta name="description"
+    content="Find the hottest trending food spots near you — Matcha, Birria Tacos, Boba, Hot Honey, Pistachio Croissants and more on the map.">
+
+  <!-- Google Maps -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHMMMCUcx73k4wKHzvMnVy74qAS_CwUkQ&libraries=places&callback=initMap">
+    </script>
+
+  <!-- Playfair Display (editorial serif) + Figtree (clean body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Figtree:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --cream: #f5f1e8;
+      --cream2: #ebe4d6;
+      --paper: #faf7f2;
+      --ink: #2c3d28;
+      --ink2: #445c3e;
+      --muted: #8fab80;
+      --border: #c8d9bc;
+      --red: #5e9e6e;
+      --red2: #74b888;
+      --gold: #8aA070;
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: 'Figtree', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ══════════════════════════════
+       HEADER — Newspaper masthead
+    ══════════════════════════════ */
+    header {
+      background: #344a2e;
+      border-bottom: 3px solid var(--red);
+      flex-shrink: 0;
+      z-index: 200;
+    }
+
+    /* Decorative stripe at very top */
+    .masthead-stripe {
+      height: 3px;
+      background: repeating-linear-gradient(to right, var(--red) 0, var(--red) 48px, var(--gold) 48px, var(--gold) 96px);
+    }
+
+    .masthead {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px 4px;
+      gap: 28px;
+    }
+
+    .logo {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      line-height: 1;
+      gap: 0;
+      flex-shrink: 0;
+    }
+
+    .logo-trend {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: var(--cream);
+      text-transform: uppercase;
+      line-height: 0.95;
+    }
+
+    .logo-food {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--cream);
+      letter-spacing: -1px;
+      line-height: 0.95;
+      position: relative;
+    }
+
+    .logo-usa {
+      position: absolute;
+      right: -14px;
+      bottom: -8px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .usa-u {
+      color: #e03030;
+    }
+
+    .usa-s {
+      color: #7dd8ff;
+    }
+
+    .usa-a {
+      color: #f5f5f5;
+    }
+
+    .masthead-rule {
+      width: 1px;
+      height: 32px;
+      background: #4a6844;
+      flex-shrink: 0;
+    }
+
+    .tagline {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #8aac7e;
+      white-space: nowrap;
+    }
+
+    /* Controls row */
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px 10px;
+    }
+
+    /* ── Category dropdown ── */
+    .cat-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .cat-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+      transition: background 0.15s;
+    }
+
+    .cat-btn:hover {
+      background: var(--red2);
+    }
+
+    .cat-btn .arrow {
+      font-size: 9px;
+      opacity: 0.7;
+      transition: transform 0.2s;
+      margin-left: 2px;
+    }
+
+    .cat-btn.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .cat-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      background: #4a3820;
+      border: 1px solid #5e4a2a;
+      border-radius: 4px;
+      min-width: 230px;
+      z-index: 600;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+    }
+
+    .cat-dropdown.open {
+      display: block;
+    }
+
+    .dd-section {
+      border-bottom: none;
+    }
+
+    .dd-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #f0e8d8;
+      font-weight: 500;
+      transition: background 0.1s;
+    }
+
+    .dd-item:hover {
+      background: #5e4a2a;
+    }
+
+    .dd-item.active {
+      background: #6a5030;
+      color: #e8c888;
+    }
+
+    /* ── State select ── */
+    .state-select {
+      flex-shrink: 0;
+      background: #405c38;
+      border: 1px solid #527048;
+      border-radius: 3px;
+      padding: 7px 24px 7px 10px;
+      color: var(--cream);
+      font-size: 12.5px;
+      font-family: inherit;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238aA070'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      min-width: 68px;
+    }
+
+    .state-select:focus {
+      border-color: var(--red);
+    }
+
+    /* ── Search input ── */
+    .search-input {
+      flex: 1;
+      min-width: 0;
+      background: #405c38;
+      border: 1px solid #527048;
+      border-radius: 3px;
+      padding: 7px 14px;
+      color: var(--cream);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-input::placeholder {
+      color: #aac898;
+    }
+
+    .search-input:focus {
+      border-color: var(--red);
+    }
+
+    .search-btn {
+      flex-shrink: 0;
+      padding: 7px 18px;
+      background: var(--cream);
+      color: var(--ink);
+      border: none;
+      border-radius: 3px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .search-btn:hover {
+      opacity: 0.85;
+    }
+
+    /* ══════════════════════════════
+       APP BODY
+    ══════════════════════════════ */
+    .app-body {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* ══════════════════════════════
+       SIDEBAR
+    ══════════════════════════════ */
+    .sidebar {
+      width: 310px;
+      min-width: 260px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--paper);
+      border-right: 1.5px solid var(--border);
+      overflow: hidden;
+    }
+
+    .sidebar-head {
+      padding: 14px 16px 10px;
+      border-bottom: 1.5px solid var(--border);
+      background: var(--cream);
+      flex-shrink: 0;
+    }
+
+    .sidebar-eyebrow {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 2px;
+    }
+
+    .sidebar-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .sidebar-count {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .sidebar-count strong {
+      color: var(--red);
+    }
+
+    .store-list {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .store-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.1s;
+      position: relative;
+    }
+
+    .store-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--red);
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .store-item:hover {
+      background: var(--cream);
+    }
+
+    .store-item:hover::before {
+      opacity: 0.35;
+    }
+
+    .store-item.selected {
+      background: #eef3ec;
+    }
+
+    .store-item.selected::before {
+      opacity: 1;
+    }
+
+    .store-num {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      margin-bottom: 1px;
+    }
+
+    .store-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .store-addr {
+      font-size: 11.5px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .store-meta {
+      display: flex;
+      gap: 5px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 2px;
+      background: var(--cream2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-weight: 600;
+    }
+
+    .badge-open {
+      background: #eef5ec;
+      color: #2d6b3a;
+      border-color: #9ec9a8;
+    }
+
+    .badge-closed {
+      background: #f5efee;
+      color: #7a3a32;
+      border-color: #d4a8a4;
+    }
+
+    .badge-rating {
+      background: #f2f5ee;
+      color: var(--gold);
+      border-color: #b8c8a8;
+    }
+
+    .loading,
+    .empty-msg,
+    .error-msg {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 2.5px solid var(--border);
+      border-top-color: var(--red);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ══════════════════════════════
+       MAP
+    ══════════════════════════════ */
+    .map-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .map-loading {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ink);
+      color: var(--cream2);
+      border-radius: 2px;
+      padding: 6px 16px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      z-index: 10;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .map-loading.show {
+      display: flex;
+    }
+
+    .mini-spin {
+      width: 12px;
+      height: 12px;
+      border: 2px solid #2e3a28;
+      border-top-color: var(--red2);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    /* ══════════════════════════════
+       DETAIL PANEL
+    ══════════════════════════════ */
+    .detail-panel {
+      position: absolute;
+      bottom: -100%;
+      left: 0;
+      right: 0;
+      background: var(--paper);
+      border-top: 3px solid var(--red);
+      padding: 18px 22px 30px;
+      z-index: 50;
+      transition: bottom 0.3s cubic-bezier(.4, 0, .2, 1);
+      box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.15);
+      max-height: 54%;
+      overflow-y: auto;
+    }
+
+    .detail-panel.show {
+      bottom: 0;
+    }
+
+    .detail-drag {
+      width: 36px;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 auto 14px;
+    }
+
+    .detail-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--cream2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .detail-eyebrow {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 4px;
+    }
+
+    .detail-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .detail-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 13px;
+      color: var(--ink2);
+      margin-bottom: 7px;
+      line-height: 1.5;
+    }
+
+    .detail-row .icon {
+      font-size: 13px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      color: var(--muted);
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      flex: 1;
+      min-width: 90px;
+      padding: 10px 12px;
+      border-radius: 3px;
+      text-align: center;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+    }
+
+    .btn:hover {
+      opacity: 0.82;
+    }
+
+    .btn-gmaps {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .btn-call {
+      background: var(--ink);
+      color: var(--cream);
+    }
+
+    .btn-web {
+      background: var(--cream2);
+      color: var(--ink);
+      border: 1px solid var(--border);
+    }
+
+    /* ══════════════════════════════
+       FOOTER
+    ══════════════════════════════ */
+    footer {
+      background: #344a2e;
+      border-top: 1px solid #4a6844;
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10.5px;
+      color: #7aaa6e;
+      flex-shrink: 0;
+    }
+
+    footer a {
+      color: #7aaa6e;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--cream);
+    }
+
+    /* ══════════════════════════════
+       MOBILE
+    ══════════════════════════════ */
+    @media (max-width: 680px) {
+      .sidebar {
+        display: none;
+      }
+
+      .tagline {
+        font-size: 8px;
+        letter-spacing: 1.5px;
+      }
+
+      .mobile-fab {
+        display: flex !important;
+      }
+
+      .mobile-sheet {
+        display: flex !important;
+      }
+    }
+
+    .mobile-fab {
+      display: none;
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ink);
+      border: none;
+      border-radius: 2px;
+      padding: 9px 20px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--cream);
+      cursor: pointer;
+      z-index: 40;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+      font-family: inherit;
+    }
+
+    .mobile-sheet {
+      display: none;
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: var(--paper);
+      border-top: 3px solid var(--red);
+      z-index: 45;
+      flex-direction: column;
+      transition: bottom 0.3s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .mobile-sheet.show {
+      bottom: 0;
+    }
+
+    .sheet-drag {
+      width: 36px;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 12px auto 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .sheet-body {
+      flex: 1;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════ HEADER ══════════════════ -->
+  <header>
+    <div class="masthead-stripe"></div>
+    <div class="masthead">
+      <a href="/" class="logo">
+        <span class="logo-trend">TREND</span>
+        <span class="logo-food">FOOD<span class="logo-usa"><span class="usa-u">U</span><span class="usa-s">S</span><span
+              class="usa-a">A</span></span></span>
+      </a>
+      <div class="masthead-rule"></div>
+      <span class="tagline">America's Food Trend Finder</span>
+    </div>
+
+    <div class="header-controls">
+
+      <!-- ① Category dropdown -->
+      <div class="cat-wrap" id="catWrap">
+        <button class="cat-btn" id="catBtn" onclick="toggleDropdown()">
+          <span id="selEmoji">🍵</span>
+          <span id="selLabel">Matcha</span>
+          <span class="arrow">▼</span>
+        </button>
+
+        <div class="cat-dropdown" id="catDropdown">
+
+          <div class="dd-section">
+            <div class="dd-item active" data-query="matcha cafe" data-emoji="🍵" data-label="Matcha"
+              onclick="selectCat(this)">
+              🍵&nbsp; Matcha
+            </div>
+            <div class="dd-item" data-query="pistachio croissant bakery" data-emoji="🥐"
+              data-label="Pistachio Croissant" onclick="selectCat(this)">
+              🥐&nbsp; Pistachio Croissant
+            </div>
+            <div class="dd-item" data-query="hot honey restaurant" data-emoji="🍯" data-label="Hot Honey"
+              onclick="selectCat(this)">
+              🍯&nbsp; Hot Honey
+            </div>
+            <div class="dd-item" data-query="dubai chocolate bar shop" data-emoji="🍫" data-label="Dubai Chocolate"
+              onclick="selectCat(this)">
+              🍫&nbsp; Dubai Chocolate
+            </div>
+            <div class="dd-item" data-query="doner kebab restaurant" data-emoji="🥙" data-label="Doner Kebab"
+              onclick="selectCat(this)">
+              🥙&nbsp; Doner Kebab
+            </div>
+            <div class="dd-item" data-query="smash burger restaurant" data-emoji="🍔" data-label="Smash Burger"
+              onclick="selectCat(this)">
+              🍔&nbsp; Smash Burger
+            </div>
+            <div class="dd-item" data-query="birria tacos restaurant" data-emoji="🌮" data-label="Birria Tacos"
+              onclick="selectCat(this)">
+              🌮&nbsp; Birria Tacos
+            </div>
+            <div class="dd-item" data-query="boba tea shop" data-emoji="🧋" data-label="Boba Tea"
+              onclick="selectCat(this)">
+              🧋&nbsp; Boba Tea
+            </div>
+            <div class="dd-item" data-query="korean fried chicken restaurant" data-emoji="🍗"
+              data-label="Korean Fried Chicken" onclick="selectCat(this)">
+              🍗&nbsp; Korean Fried Chicken
+            </div>
+            <div class="dd-item" data-query="croffle waffle cafe" data-emoji="🧇" data-label="Croffle"
+              onclick="selectCat(this)">
+              🧇&nbsp; Croffle
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /cat-wrap -->
+
+      <!-- ② State selector -->
+      <select class="state-select" id="stateSelect" onchange="goToState()">
+        <option value="">All States</option>
+        <option value="Alabama">AL</option>
+        <option value="Alaska">AK</option>
+        <option value="Arizona">AZ</option>
+        <option value="Arkansas">AR</option>
+        <option value="California">CA</option>
+        <option value="Colorado">CO</option>
+        <option value="Connecticut">CT</option>
+        <option value="Delaware">DE</option>
+        <option value="Florida">FL</option>
+        <option value="Georgia">GA</option>
+        <option value="Hawaii">HI</option>
+        <option value="Idaho">ID</option>
+        <option value="Illinois">IL</option>
+        <option value="Indiana">IN</option>
+        <option value="Iowa">IA</option>
+        <option value="Kansas">KS</option>
+        <option value="Kentucky">KY</option>
+        <option value="Louisiana">LA</option>
+        <option value="Maine">ME</option>
+        <option value="Maryland">MD</option>
+        <option value="Massachusetts">MA</option>
+        <option value="Michigan">MI</option>
+        <option value="Minnesota">MN</option>
+        <option value="Mississippi">MS</option>
+        <option value="Missouri">MO</option>
+        <option value="Montana">MT</option>
+        <option value="Nebraska">NE</option>
+        <option value="Nevada">NV</option>
+        <option value="New Hampshire">NH</option>
+        <option value="New Jersey">NJ</option>
+        <option value="New Mexico">NM</option>
+        <option value="New York">NY</option>
+        <option value="North Carolina">NC</option>
+        <option value="North Dakota">ND</option>
+        <option value="Ohio">OH</option>
+        <option value="Oklahoma">OK</option>
+        <option value="Oregon">OR</option>
+        <option value="Pennsylvania">PA</option>
+        <option value="Rhode Island">RI</option>
+        <option value="South Carolina">SC</option>
+        <option value="South Dakota">SD</option>
+        <option value="Tennessee">TN</option>
+        <option value="Texas">TX</option>
+        <option value="Utah">UT</option>
+        <option value="Vermont">VT</option>
+        <option value="Virginia">VA</option>
+        <option value="Washington">WA</option>
+        <option value="West Virginia">WV</option>
+        <option value="Wisconsin">WI</option>
+        <option value="Wyoming">WY</option>
+      </select>
+
+      <!-- ③ City / neighborhood search -->
+      <input type="text" class="search-input" id="searchInput" placeholder="City, neighborhood, zip code…" />
+      <button class="search-btn" onclick="searchLocation()">Go</button>
+
+    </div>
+  </header>
+
+  <!-- ══════════════════ BODY ══════════════════ -->
+  <div class="app-body">
+
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div class="sidebar-eyebrow">Now Showing</div>
+        <div class="sidebar-title" id="sidebarTitle">🍵 Matcha</div>
+        <div class="sidebar-count" id="sidebarCount">Move the map to search</div>
+      </div>
+      <div class="store-list" id="storeList">
+        <div class="loading">
+          <div class="spinner"></div>
+          Pan or zoom the map to find spots near you.
+        </div>
+      </div>
+    </aside>
+
+    <div class="map-wrap">
+      <div id="map"></div>
+
+      <div class="map-loading" id="mapLoading">
+        <div class="mini-spin"></div>
+        Searching…
+      </div>
+
+      <div class="detail-panel" id="detailPanel">
+        <div class="detail-drag"></div>
+        <span class="detail-close" onclick="closeDetail()">×</span>
+        <div class="detail-eyebrow" id="detailCat">Trending Spot</div>
+        <div class="detail-name" id="detailName">—</div>
+        <div class="detail-divider"></div>
+        <div class="detail-row"><span class="icon">📍</span><span id="detailAddr">—</span></div>
+        <div class="detail-row" id="phoneRow" style="display:none"><span class="icon">📞</span><span
+            id="detailPhone">—</span></div>
+        <div class="detail-row" id="ratingRow" style="display:none"><span class="icon">⭐</span><span
+            id="detailRating">—</span></div>
+        <div class="detail-row" id="hoursRow" style="display:none"><span class="icon">🕐</span><span
+            id="detailHours">—</span></div>
+        <div class="detail-actions">
+          <a class="btn btn-gmaps" id="btnMaps" href="#" target="_blank">📍 Google Maps</a>
+          <a class="btn btn-call" id="btnCall" href="#" style="display:none">📞 Call</a>
+          <a class="btn btn-web" id="btnWeb" href="#" target="_blank" style="display:none">🌐 Website</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile -->
+  <button class="mobile-fab" onclick="toggleSheet()">
+    📋 <span id="fabLabel">View List</span>
+  </button>
+  <div class="mobile-sheet" id="mobileSheet">
+    <div class="sheet-drag" onclick="toggleSheet()"></div>
+    <div class="sheet-body" id="mobileList"></div>
+  </div>
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer>
+    <span>© 2025 Trend Food USA</span>
+    <span><a href="/legal.html">Terms &amp; Privacy</a> · Powered by Google Places API</span>
+  </footer>
+
+  <script>
+    /* ───────── STATE ───────── */
+    let map, service;
+    let markers = [];
+    let currentQuery = 'matcha cafe';
+    let currentEmoji = '🍵';
+    let currentLabel = 'Matcha';
+    let searchTimer, isSearching = false;
+    let sheetOpen = false;
+    let isPanning   = false;
+    let isPanelOpen = false;
+
+    const PIN_COLORS = {
+      'matcha cafe': '#4caf50',
+      'pistachio croissant bakery': '#8bc34a',
+      'hot honey restaurant': '#ff9800',
+      'dubai chocolate bar shop': '#795548',
+      'doner kebab restaurant': '#f44336',
+      'smash burger restaurant': '#ff5722',
+      'birria tacos restaurant': '#e91e63',
+      'boba tea shop': '#9c27b0',
+      'korean fried chicken restaurant': '#ff6d00',
+      'croffle waffle cafe': '#ffc107',
+    };
+
+    /* ───────── DROPDOWN ───────── */
+    function toggleDropdown() {
+      document.getElementById('catBtn').classList.toggle('open');
+      document.getElementById('catDropdown').classList.toggle('open');
+    }
+    document.addEventListener('click', e => {
+      if (!document.getElementById('catWrap').contains(e.target)) {
+        document.getElementById('catBtn').classList.remove('open');
+        document.getElementById('catDropdown').classList.remove('open');
+      }
+    });
+    function selectCat(el) {
+      document.querySelectorAll('.dd-item').forEach(d => d.classList.remove('active'));
+      el.classList.add('active');
+      currentQuery = el.dataset.query;
+      currentEmoji = el.dataset.emoji;
+      currentLabel = el.dataset.label;
+      document.getElementById('selEmoji').textContent = currentEmoji;
+      document.getElementById('selLabel').textContent = currentLabel;
+      document.getElementById('catBtn').classList.remove('open');
+      document.getElementById('catDropdown').classList.remove('open');
+      loadStores();
+    }
+
+    /* ───────── MAP INIT ───────── */
+    function initMap() {
+      const vintageStyle = [
+        { elementType: 'geometry', stylers: [{ color: '#edeee8' }] },
+        { elementType: 'labels.text.fill', stylers: [{ color: '#4a5a42' }] },
+        { elementType: 'labels.text.stroke', stylers: [{ color: '#f4f4f0' }] },
+        { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ddddd5' }] },
+        { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#c8cfc0' }] },
+        { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#c8d4b8' }] },
+        { featureType: 'road.highway', elementType: 'geometry.stroke', stylers: [{ color: '#b0c0a0' }] },
+        { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#7a8a72' }] },
+        { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#b8cfd8' }] },
+        { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#7a9aa8' }] },
+        { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#dde4d8' }] },
+        { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#7a8a72' }] },
+        { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#c8d8b8' }] },
+        { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#e8ece0' }] },
+        { featureType: 'transit', elementType: 'geometry', stylers: [{ color: '#dde4d8' }] },
+        { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#b8c8a8' }] },
+        { featureType: 'administrative', elementType: 'labels.text.fill', stylers: [{ color: '#5a7050' }] },
+      ];
+
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 40.7128, lng: -74.0060 },
+        zoom: 13,
+        styles: vintageStyle,
+        disableDefaultUI: true,
+        zoomControl: true,
+        zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
+        gestureHandling: 'greedy',
+      });
+
+      service = new google.maps.places.PlacesService(map);
+      map.addListener('idle', () => {
+        if (isPanning) return;
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(loadStores, 650);
+      });
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          p => { map.setCenter({ lat: p.coords.latitude, lng: p.coords.longitude }); map.setZoom(14); },
+          () => { }
+        );
+      }
+
+      loadStores();
+    }
+
+    /* ───────── LOAD ───────── */
+    function loadStores() {
+      if (!service || isSearching) return;
+      isSearching = true;
+      showLoading(true);
+      if (!isPanelOpen) {
+        closeDetail();
+        clearMarkers();
+        setList('<div class="loading"><div class="spinner"></div>Searching…</div>');
+        document.getElementById('sidebarCount').textContent = 'Searching…';
+      }
+
+      service.textSearch({ query: currentQuery, location: map.getCenter(), radius: 5000 },
+        (results, status) => {
+          isSearching = false;
+          showLoading(false);
+          if (status === google.maps.places.PlacesServiceStatus.OK && results.length) {
+            window._stores = results;
+            clearMarkers();
+            renderMarkers(results);
+            if (!isPanelOpen) {
+              renderList(results);
+            } else {
+              document.getElementById('sidebarCount').innerHTML =
+                `Found <strong>${results.length} spot${results.length !== 1 ? 's' : ''}</strong> in this area`;
+            }
+          } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+            if (!isPanelOpen) {
+              setList('<div class="empty-msg">No spots found here.<br>Try a different area or category.</div>');
+              document.getElementById('sidebarCount').textContent = 'No results';
+            }
+          } else {
+            if (!isPanelOpen) {
+              setList(`<div class="error-msg">⚠️ Error (${status})<br>Check your Google Maps API key.</div>`);
+              document.getElementById('sidebarCount').textContent = 'Error';
+            }
+          }
+        }
+      );
+    }
+
+    function setList(html) {
+      document.getElementById('storeList').innerHTML = html;
+      document.getElementById('mobileList').innerHTML = html;
+    }
+
+    /* ───────── RENDER LIST ───────── */
+    function renderList(stores) {
+      document.getElementById('sidebarTitle').textContent = `${currentEmoji} ${currentLabel}`;
+      document.getElementById('sidebarCount').innerHTML =
+        `Found <strong>${stores.length} spot${stores.length !== 1 ? 's' : ''}</strong> in this area`;
+
+      const html = stores.map((s, i) => {
+        const open = s.opening_hours?.open_now;
+        const rating = s.rating;
+        return `
+    <div class="store-item" id="si-${i}" onclick="selectStore(${i})">
+      <div class="store-num">#${String(i + 1).padStart(2, '0')}</div>
+      <div class="store-name">${s.name}</div>
+      <div class="store-addr">${s.formatted_address || s.vicinity || '—'}</div>
+      <div class="store-meta">
+        ${open !== undefined ? `<span class="badge ${open ? 'badge-open' : 'badge-closed'}">${open ? '● Open' : 'Closed'}</span>` : ''}
+        ${rating ? `<span class="badge badge-rating">★ ${rating.toFixed(1)}</span>` : ''}
+      </div>
+    </div>`;
+      }).join('');
+
+      setList(html);
+    }
+
+    /* ───────── MARKERS ───────── */
+    function renderMarkers(stores) {
+      const pinColor = PIN_COLORS[currentQuery] || '#c0392b';
+      stores.forEach((store, i) => {
+        if (!store.geometry?.location) return;
+        const el = document.createElement('div');
+        el.style.cssText = `width:36px;height:36px;border-radius:50% 50% 50% 0;
+      background:${pinColor};transform:rotate(-45deg);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 3px 12px rgba(0,0,0,0.4);cursor:pointer;
+      border:2.5px solid rgba(255,255,255,0.6);position:absolute;`;
+        el.innerHTML = `<span style="transform:rotate(45deg);font-size:15px">${currentEmoji}</span>`;
+        el.title = store.name;
+
+        const ov = new google.maps.OverlayView();
+        ov.onAdd = function () { this.getPanes().overlayMouseTarget.appendChild(el); };
+        ov.draw = function () {
+          const p = this.getProjection().fromLatLngToDivPixel(store.geometry.location);
+          el.style.left = (p.x - 18) + 'px';
+          el.style.top = (p.y - 36) + 'px';
+        };
+        ov.onRemove = function () { el.remove(); };
+        el.addEventListener('click', () => selectStore(i));
+        ov.setMap(map);
+        markers.push(ov);
+      });
+    }
+    function clearMarkers() { markers.forEach(m => m.setMap(null)); markers = []; }
+
+    /* ───────── DETAIL ───────── */
+    function selectStore(idx) {
+      const s = window._stores?.[idx];
+      if (!s) return;
+      document.querySelectorAll('.store-item').forEach(el => el.classList.remove('selected'));
+      document.querySelectorAll(`#si-${idx}`).forEach(el => {
+        el.classList.add('selected');
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+      if (s.geometry?.location) {
+        isPanning = true;
+        map.panTo(s.geometry.location);
+        setTimeout(() => { isPanning = false; }, 800);
+      }
+      isPanelOpen = true;
+
+      document.getElementById('detailCat').textContent = `${currentEmoji} ${currentLabel}`;
+      document.getElementById('detailName').textContent = s.name;
+      document.getElementById('detailAddr').textContent = s.formatted_address || s.vicinity || '—';
+
+      if (s.rating) {
+        document.getElementById('detailRating').textContent =
+          `${s.rating.toFixed(1)} ★  ·  ${(s.user_ratings_total || 0).toLocaleString()} reviews`;
+        document.getElementById('ratingRow').style.display = 'flex';
+      } else document.getElementById('ratingRow').style.display = 'none';
+
+      const open = s.opening_hours?.open_now;
+      ['phoneRow', 'hoursRow'].forEach(id => document.getElementById(id).style.display = 'none');
+      ['btnCall', 'btnWeb'].forEach(id => document.getElementById(id).style.display = 'none');
+
+      document.getElementById('btnMaps').href =
+        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.name)}&query_place_id=${s.place_id}`;
+
+      service.getDetails({ placeId: s.place_id, fields: ['formatted_phone_number', 'website', 'opening_hours'] },
+        (d, st) => {
+          if (st !== google.maps.places.PlacesServiceStatus.OK || !d) return;
+          if (d.formatted_phone_number) {
+            document.getElementById('detailPhone').textContent = d.formatted_phone_number;
+            document.getElementById('phoneRow').style.display = 'flex';
+            document.getElementById('btnCall').href = 'tel:' + d.formatted_phone_number.replace(/\D/g, '');
+            document.getElementById('btnCall').style.display = 'block';
+          }
+          if (d.website) {
+            document.getElementById('btnWeb').href = d.website;
+            document.getElementById('btnWeb').style.display = 'block';
+          }
+          if (d.opening_hours) {
+            const today = d.opening_hours.weekday_text?.[(new Date().getDay() + 6) % 7] || '';
+            const label = open !== undefined ? (open ? '🟢 ' : '🔴 ') : '';
+            document.getElementById('detailHours').textContent = label + today;
+            document.getElementById('hoursRow').style.display = 'flex';
+          }
+        }
+      );
+
+      document.getElementById('detailPanel').classList.add('show');
+    }
+    function closeDetail() {
+      isPanelOpen = false;
+      document.getElementById('detailPanel').classList.remove('show');
+      document.querySelectorAll('.store-item').forEach(el => el.classList.remove('selected'));
+    }
+
+    /* ───────── NAVIGATION ───────── */
+    // Geocoder 대신 Places API만 사용 (별도 Geocoding API 활성화 불필요)
+    function searchLocation() {
+      const q = document.getElementById('searchInput').value.trim();
+      if (!q) return;
+
+      // PlacesService.findPlaceFromQuery로 위치 검색
+      service.findPlaceFromQuery(
+        { query: q, fields: ['geometry', 'name', 'formatted_address'] },
+        (results, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK && results && results[0]?.geometry) {
+            const loc = results[0].geometry.location;
+            const vp  = results[0].geometry.viewport;
+            closeDetail();
+            clearMarkers();
+            if (vp) {
+              map.fitBounds(vp);
+            } else {
+              map.setCenter(loc);
+              map.setZoom(13);
+            }
+            loadStores();
+          } else {
+            // fallback: textSearch로 한번 더 시도
+            service.textSearch({ query: q + ' USA' }, (res2, st2) => {
+              if (st2 === google.maps.places.PlacesServiceStatus.OK && res2[0]?.geometry) {
+                const loc2 = res2[0].geometry.location;
+                closeDetail();
+                clearMarkers();
+                map.setCenter(loc2);
+                map.setZoom(13);
+                loadStores();
+              } else {
+                alert('Location not found.\nTry: "Los Angeles", "LA", "Brooklyn NY", or "90210"');
+              }
+            });
+          }
+        }
+      );
+    }
+
+    function goToState() {
+      const val = document.getElementById('stateSelect').value;
+      if (!val) return;
+      service.findPlaceFromQuery(
+        { query: val + ' state USA', fields: ['geometry'] },
+        (results, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK && results[0]?.geometry) {
+            const vp = results[0].geometry.viewport;
+            if (vp) map.fitBounds(vp);
+            else { map.setCenter(results[0].geometry.location); map.setZoom(7); }
+            setTimeout(loadStores, 400);
+          }
+        }
+      );
+    }
+    document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') searchLocation(); });
+
+    /* ───────── UTILS ───────── */
+    function showLoading(show) { document.getElementById('mapLoading').classList.toggle('show', show); }
+    function toggleSheet() {
+      sheetOpen = !sheetOpen;
+      document.getElementById('mobileSheet').classList.toggle('show', sheetOpen);
+      document.getElementById('fabLabel').textContent = sheetOpen ? 'Close' : 'View List';
+    }
+  </script>
+</body>
+
+</html>
