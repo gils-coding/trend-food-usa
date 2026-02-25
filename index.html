@@ -339,10 +339,14 @@
       color: var(--cream);
     }
 
-    display: flex;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
+    /* ══════════════════════════════
+       APP BODY
+    ══════════════════════════════ */
+    .app-body {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
     }
 
     /* ══════════════════════════════
@@ -1013,6 +1017,8 @@
     let currentLabel = 'Matcha';
     let searchTimer, isSearching = false;
     let sheetOpen = false;
+    let isPanning = false;
+    let isPanelOpen = false;
 
     const PIN_COLORS = {
       'matcha cafe': '#4caf50',
@@ -1085,6 +1091,7 @@
 
       service = new google.maps.places.PlacesService(map);
       map.addListener('idle', () => {
+        if (isPanning) return;
         clearTimeout(searchTimer);
         searchTimer = setTimeout(loadStores, 650);
       });
@@ -1104,10 +1111,12 @@
       if (!service || isSearching) return;
       isSearching = true;
       showLoading(true);
-      closeDetail();
-      clearMarkers();
-      setList('<div class="loading"><div class="spinner"></div>Searching…</div>');
-      document.getElementById('sidebarCount').textContent = 'Searching…';
+      if (!isPanelOpen) {
+        closeDetail();
+        clearMarkers();
+        setList('<div class="loading"><div class="spinner"></div>Searching…</div>');
+        document.getElementById('sidebarCount').textContent = 'Searching…';
+      }
 
       service.textSearch({ query: currentQuery, location: map.getCenter(), radius: 5000 },
         (results, status) => {
@@ -1115,14 +1124,24 @@
           showLoading(false);
           if (status === google.maps.places.PlacesServiceStatus.OK && results.length) {
             window._stores = results;
-            renderList(results);
+            clearMarkers();
             renderMarkers(results);
+            if (!isPanelOpen) {
+              renderList(results);
+            } else {
+              document.getElementById('sidebarCount').innerHTML =
+                `Found <strong>${results.length} spot${results.length !== 1 ? 's' : ''}</strong> in this area`;
+            }
           } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-            setList('<div class="empty-msg">No spots found here.<br>Try a different area or category.</div>');
-            document.getElementById('sidebarCount').textContent = 'No results';
+            if (!isPanelOpen) {
+              setList('<div class="empty-msg">No spots found here.<br>Try a different area or category.</div>');
+              document.getElementById('sidebarCount').textContent = 'No results';
+            }
           } else {
-            setList(`<div class="error-msg">⚠️ Error (${status})<br>Check your Google Maps API key.</div>`);
-            document.getElementById('sidebarCount').textContent = 'Error';
+            if (!isPanelOpen) {
+              setList(`<div class="error-msg">⚠️ Error (${status})<br>Check your Google Maps API key.</div>`);
+              document.getElementById('sidebarCount').textContent = 'Error';
+            }
           }
         }
       );
@@ -1195,7 +1214,12 @@
         el.classList.add('selected');
         el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
-      if (s.geometry?.location) map.panTo(s.geometry.location);
+      if (s.geometry?.location) {
+        isPanning = true;
+        map.panTo(s.geometry.location);
+        setTimeout(() => { isPanning = false; }, 800);
+      }
+      isPanelOpen = true;
 
       document.getElementById('detailCat').textContent = `${currentEmoji} ${currentLabel}`;
       document.getElementById('detailName').textContent = s.name;
@@ -1239,6 +1263,7 @@
       document.getElementById('detailPanel').classList.add('show');
     }
     function closeDetail() {
+      isPanelOpen = false;
       document.getElementById('detailPanel').classList.remove('show');
       document.querySelectorAll('.store-item').forEach(el => el.classList.remove('selected'));
     }
