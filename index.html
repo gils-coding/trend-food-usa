@@ -141,7 +141,6 @@
 
     .usa-a {
       color: #f5f5f5;
-      margin-left: 1px;
     }
 
     .masthead-rule {
@@ -534,6 +533,33 @@
     .map-wrap {
       flex: 1;
       position: relative;
+    }
+
+    .my-location-btn {
+      position: absolute;
+      top: 14px;
+      right: 48px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      background: var(--paper);
+      border: 1.5px solid var(--border);
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: inherit;
+      color: var(--ink);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      transition: background 0.15s, border-color 0.15s;
+      letter-spacing: 0.3px;
+    }
+
+    .my-location-btn:hover {
+      background: var(--cream);
+      border-color: var(--red);
     }
 
     #map {
@@ -966,6 +992,8 @@
     <div class="map-wrap">
       <div id="map"></div>
 
+      <button class="my-location-btn" onclick="goToMyLocation()">📍 My Location</button>
+
       <div class="map-loading" id="mapLoading">
         <div class="mini-spin"></div>
         Searching…
@@ -1327,6 +1355,19 @@
 
     /* ───────── UTILS ───────── */
     function showLoading(show) { document.getElementById('mapLoading').classList.toggle('show', show); }
+    function goToMyLocation() {
+      if (!navigator.geolocation) { alert('위치 서비스를 지원하지 않는 브라우저입니다.'); return; }
+      navigator.geolocation.getCurrentPosition(
+        p => {
+          closeDetail();
+          clearMarkers();
+          map.setCenter({ lat: p.coords.latitude, lng: p.coords.longitude });
+          map.setZoom(14);
+          loadStores();
+        },
+        () => { alert('위치 권한을 허용해주세요.'); }
+      );
+    }
     function toggleSheet() {
       sheetOpen = !sheetOpen;
       document.getElementById('mobileSheet').classList.toggle('show', sheetOpen);
