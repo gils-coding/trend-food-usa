@@ -1106,6 +1106,13 @@
       loadStores();
     }
 
+    /* ───────── US FILTER ───────── */
+    function isUSResult(place) {
+      const addr = (place.formatted_address || place.vicinity || '').toLowerCase();
+      return addr.includes('미국') || addr.includes('usa') || addr.includes('united states') ||
+        /,\s*[a-z]{2}\s+\d{5}/.test(addr);
+    }
+
     /* ───────── LOAD ───────── */
     function loadStores() {
       if (!service || isSearching) return;
@@ -1123,14 +1130,16 @@
           isSearching = false;
           showLoading(false);
           if (status === google.maps.places.PlacesServiceStatus.OK && results.length) {
-            window._stores = results;
+            const usResults = results.filter(isUSResult);
+            const final = usResults.length ? usResults : results;
+            window._stores = final;
             clearMarkers();
-            renderMarkers(results);
+            renderMarkers(final);
             if (!isPanelOpen) {
-              renderList(results);
+              renderList(final);
             } else {
               document.getElementById('sidebarCount').innerHTML =
-                `Found <strong>${results.length} spot${results.length !== 1 ? 's' : ''}</strong> in this area`;
+                `Found <strong>${final.length} spot${final.length !== 1 ? 's' : ''}</strong> in this area`;
             }
           } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
             if (!isPanelOpen) {
