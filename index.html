@@ -339,14 +339,10 @@
       color: var(--cream);
     }
 
-    /* ══════════════════════════════
-       APP BODY
-    ══════════════════════════════ */
-    .app-body {
-      display: flex;
-      flex: 1;
-      min-height: 0;
-      overflow: hidden;
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
     }
 
     /* ══════════════════════════════
@@ -1251,25 +1247,46 @@
     function searchLocation() {
       const q = document.getElementById('searchInput').value.trim();
       if (!q) return;
-      new google.maps.Geocoder().geocode({ address: q + ', USA' }, (res, st) => {
-        if (st === 'OK' && res[0]) {
-          map.setCenter(res[0].geometry.location);
-          map.setZoom(14);
-          loadStores();
-        } else {
-          alert('Location not found. Try "Austin, TX" or a zip code.');
+      service.findPlaceFromQuery(
+        { query: q, fields: ['geometry', 'name', 'formatted_address'] },
+        (results, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK && results && results[0]?.geometry) {
+            const loc = results[0].geometry.location;
+            const vp = results[0].geometry.viewport;
+            closeDetail();
+            clearMarkers();
+            if (vp) { map.fitBounds(vp); } else { map.setCenter(loc); map.setZoom(13); }
+            loadStores();
+          } else {
+            service.textSearch({ query: q + ' USA' }, (res2, st2) => {
+              if (st2 === google.maps.places.PlacesServiceStatus.OK && res2[0]?.geometry) {
+                closeDetail();
+                clearMarkers();
+                map.setCenter(res2[0].geometry.location);
+                map.setZoom(13);
+                loadStores();
+              } else {
+                alert('Location not found.\nTry: "Los Angeles", "LA", "Brooklyn NY", or "90210"');
+              }
+            });
+          }
         }
-      });
+      );
     }
     function goToState() {
       const val = document.getElementById('stateSelect').value;
       if (!val) return;
-      new google.maps.Geocoder().geocode({ address: val + ', USA' }, (res, st) => {
-        if (st === 'OK' && res[0]) {
-          map.fitBounds(res[0].geometry.viewport || res[0].geometry.bounds);
-          setTimeout(loadStores, 400);
+      service.findPlaceFromQuery(
+        { query: val + ' state USA', fields: ['geometry'] },
+        (results, status) => {
+          if (status === google.maps.places.PlacesServiceStatus.OK && results[0]?.geometry) {
+            const vp = results[0].geometry.viewport;
+            if (vp) map.fitBounds(vp);
+            else { map.setCenter(results[0].geometry.location); map.setZoom(7); }
+            setTimeout(loadStores, 400);
+          }
         }
-      });
+      );
     }
     document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') searchLocation(); });
 
