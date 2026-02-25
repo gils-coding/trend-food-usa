@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Trend Food USA</title>
+  <meta name="description"
+    content="Trend Food USA helps you find the hottest trending food spots near you — Matcha, Smash Burgers, Hot Honey, Dubai Chocolate and more, all on one map.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://trendfoodusa.netlify.app/about.html">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Figtree:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --cream: #f5f1e8;
+      --cream2: #ebe4d6;
+      --paper: #faf7f2;
+      --ink: #2c3d28;
+      --ink2: #445c3e;
+      --muted: #8fab80;
+      --border: #c8d9bc;
+      --red: #5e9e6e;
+      --red2: #74b888;
+      --gold: #8aa070;
+    }
+
+    body {
+      font-family: 'Figtree', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.75;
+    }
+
+    /* ══ HEADER — identical to index ══ */
+    header {
+      background: #344a2e;
+      border-bottom: 3px solid var(--red);
+      flex-shrink: 0;
+    }
+
+    .masthead-stripe {
+      height: 3px;
+      background: repeating-linear-gradient(to right, var(--red) 0, var(--red) 48px, var(--gold) 48px, var(--gold) 96px);
+    }
+
+    .masthead {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px 4px;
+      gap: 28px;
+    }
+
+    .logo {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      line-height: 1;
+      gap: 0;
+      flex-shrink: 0;
+    }
+
+    .logo-trend {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: var(--cream);
+      text-transform: uppercase;
+      line-height: 0.95;
+    }
+
+    .logo-food {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--cream);
+      letter-spacing: -1px;
+      line-height: 0.95;
+      position: relative;
+    }
+
+    .logo-usa {
+      position: absolute;
+      right: -14px;
+      bottom: -8px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .usa-u {
+      color: #e03030;
+    }
+
+    .usa-s {
+      color: #7dd8ff;
+      margin-left: 1.5px;
+    }
+
+    .usa-a {
+      color: #f5f5f5;
+      margin-left: 1.5px;
+    }
+
+    .masthead-rule {
+      width: 1px;
+      height: 32px;
+      background: #4a6844;
+      flex-shrink: 0;
+    }
+
+    .tagline {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #8aac7e;
+      white-space: nowrap;
+    }
+
+    /* Breadcrumb bar */
+    .sub-header {
+      background: #2c3d28;
+      border-bottom: 1px solid #4a6844;
+      padding: 7px 20px;
+      font-size: 11px;
+      color: #6a8a60;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sub-header a {
+      color: #6a8a60;
+      text-decoration: none;
+    }
+
+    .sub-header a:hover {
+      color: var(--cream);
+    }
+
+    .sub-header .current {
+      color: var(--cream2);
+      font-weight: 600;
+    }
+
+    /* ══ CONTENT ══ */
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .hero {
+      background: #344a2e;
+      border-radius: 4px;
+      padding: 36px 32px;
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: repeating-linear-gradient(to right, var(--red) 0, var(--red) 48px, var(--gold) 48px, var(--gold) 96px);
+    }
+
+    .hero-eyebrow {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--cream);
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--red2);
+    }
+
+    .hero-desc {
+      font-size: 14.5px;
+      color: #8aac7e;
+      line-height: 1.8;
+      max-width: 520px;
+    }
+
+    .section {
+      margin-bottom: 44px;
+    }
+
+    .section-header {
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+      gap: 12px;
+    }
+
+    .feature-card {
+      background: var(--paper);
+      border: 1.5px solid var(--border);
+      border-top: 3px solid var(--border);
+      border-radius: 4px;
+      padding: 16px 15px;
+      transition: border-top-color 0.15s;
+    }
+
+    .feature-card:hover {
+      border-top-color: var(--red);
+    }
+
+    .feature-icon {
+      font-size: 22px;
+      margin-bottom: 7px;
+    }
+
+    .feature-title {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+
+    .feature-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .cat-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .cat-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 13px;
+      background: var(--paper);
+      border: 1.5px solid var(--border);
+      border-left: 3px solid var(--red);
+      border-radius: 3px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink2);
+    }
+
+    .cat-tag.classic {
+      border-left-color: var(--gold);
+      opacity: 0.8;
+    }
+
+    .d-badge {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      padding: 2px 5px;
+      border-radius: 2px;
+      background: var(--red);
+      color: #fff;
+    }
+
+    .d-badge.old {
+      background: var(--cream2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .how-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .how-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--paper);
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      padding: 13px 17px;
+    }
+
+    .how-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 3px;
+      background: var(--red);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .how-text {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--ink2);
+    }
+
+    .how-text strong {
+      color: var(--ink);
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .faq-item {
+      background: var(--paper);
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .faq-q {
+      padding: 12px 17px;
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      color: var(--ink);
+    }
+
+    .faq-q::after {
+      content: '▾';
+      color: var(--red);
+      font-size: 13px;
+      transition: transform 0.2s;
+    }
+
+    .faq-item.open .faq-q::after {
+      transform: rotate(180deg);
+    }
+
+    .faq-a {
+      padding: 0 17px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s;
+      font-size: 13px;
+      color: var(--ink2);
+      line-height: 1.7;
+    }
+
+    .faq-item.open .faq-a {
+      max-height: 200px;
+      padding: 0 17px 13px;
+    }
+
+    /* ══ FOOTER — identical to index ══ */
+    footer {
+      background: #344a2e;
+      border-top: 1px solid #4a6844;
+      padding: 7px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10.5px;
+      color: #7aaa6e;
+      margin-top: 40px;
+    }
+
+    footer a {
+      color: #7aaa6e;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--cream);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 24px 16px 60px;
+      }
+
+      .hero {
+        padding: 26px 18px;
+      }
+
+      .hero-title {
+        font-size: 24px;
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .tagline {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="masthead-stripe"></div>
+    <div class="masthead">
+      <a href="/" class="logo">
+        <span class="logo-trend">TREND</span>
+        <span class="logo-food">FOOD<span class="logo-usa"><span class="usa-u">U</span><span class="usa-s">S</span><span
+              class="usa-a">A</span></span></span>
+      </a>
+      <div class="masthead-rule"></div>
+      <span class="tagline">America's Food Trend Finder</span>
+    </div>
+  </header>
+
+  <div class="sub-header">
+    <a href="/">Home</a> <span>›</span> <span class="current">About</span>
+  </div>
+
+  <div class="container">
+
+    <div class="hero">
+      <div class="hero-eyebrow">About This Service</div>
+      <div class="hero-title">Find What's <em>Trending</em><br>Near You</div>
+      <p class="hero-desc">Trend Food USA maps the hottest food and drink trends across America — from viral Matcha
+        cafés to Smash Burger spots to Dubai Chocolate bars. Discover what's blowing up on TikTok and Instagram, right
+        in your neighborhood.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">What You Can Do</div>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🗺️</div>
+          <div class="feature-title">Live Map Search</div>
+          <div class="feature-desc">Pan and zoom the map to instantly find trending spots in any area.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📍</div>
+          <div class="feature-title">Near Me</div>
+          <div class="feature-desc">One tap to locate yourself and find trending spots nearby.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <div class="feature-title">City Search</div>
+          <div class="feature-desc">Search by city, neighborhood, or zip code to jump anywhere in the US.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📞</div>
+          <div class="feature-title">Place Details</div>
+          <div class="feature-desc">View hours, phone, ratings, and get directions via Google Maps.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🗂️</div>
+          <div class="feature-title">State Filter</div>
+          <div class="feature-desc">Jump to any of the 50 states instantly using the state dropdown.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <div class="feature-title">Mobile Ready</div>
+          <div class="feature-desc">Fully optimized for phones, tablets, and desktop browsers.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">Food Categories</div>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">We track both current viral trends and enduring
+        classics. New categories are added as trends emerge.</p>
+      <div class="cat-grid">
+        <div class="cat-tag">🍵 Matcha <span class="d-badge">HOT</span></div>
+        <div class="cat-tag">🥐 Pistachio Croissant <span class="d-badge">HOT</span></div>
+        <div class="cat-tag">🍯 Hot Honey <span class="d-badge">HOT</span></div>
+        <div class="cat-tag">🍫 Dubai Chocolate <span class="d-badge">HOT</span></div>
+        <div class="cat-tag">🥙 Doner Kebab <span class="d-badge">HOT</span></div>
+        <div class="cat-tag">🍔 Smash Burger <span class="d-badge">HOT</span></div>
+        <div class="cat-tag classic">🌮 Birria Tacos <span class="d-badge old">CLASSIC</span></div>
+        <div class="cat-tag classic">🧋 Boba Tea <span class="d-badge old">CLASSIC</span></div>
+        <div class="cat-tag classic">🍗 Korean Fried Chicken <span class="d-badge old">CLASSIC</span></div>
+        <div class="cat-tag classic">🧇 Croffle <span class="d-badge old">CLASSIC</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">How to Use</div>
+      </div>
+      <div class="how-list">
+        <div class="how-item">
+          <div class="how-num">1</div>
+          <div class="how-text">Click the <strong>category dropdown</strong> and pick the trending food you want to
+            find.</div>
+        </div>
+        <div class="how-item">
+          <div class="how-num">2</div>
+          <div class="how-text"><strong>Pan the map</strong>, search by city or zip code, or tap <strong>📍</strong> to
+            use your current location.</div>
+        </div>
+        <div class="how-item">
+          <div class="how-num">3</div>
+          <div class="how-text">Click any <strong>map pin</strong> or list item to see address, hours, rating, and phone
+            number.</div>
+        </div>
+        <div class="how-item">
+          <div class="how-num">4</div>
+          <div class="how-text">Hit <strong>Google Maps</strong> to get directions and head out!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">FAQ</div>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Is Trend Food USA free?</div>
+          <div class="faq-a">Yes, completely free. No sign-up or account required.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">How accurate is the place information?</div>
+          <div class="faq-a">Place data is sourced from the Google Places API. Hours and status can change, so we
+            recommend calling ahead before visiting.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">How do I find spots near me?</div>
+          <div class="faq-a">Click the 📍 button on the map to move to your current location, or type your city,
+            neighborhood, or zip code in the search bar.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Can I suggest a new food trend?</div>
+          <div class="faq-a">Absolutely! We're always watching what's blowing up. Feel free to reach out if you spot a
+            trend we're missing.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Does this work on mobile?</div>
+          <div class="faq-a">Yes — fully optimized for smartphones, tablets, and desktop browsers.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>© 2025 Trend Food USA</span>
+    <span><a href="/">Map</a> · <a href="/legal.html">Terms &amp; Privacy</a> · Powered by Google Places API</span>
+  </footer>
+
+  <script>
+    function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
+  </script>
+</body>
+
+</html>

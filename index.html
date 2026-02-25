@@ -8,6 +8,20 @@
   <meta name="description"
     content="Find the hottest trending food spots near you — Matcha, Birria Tacos, Boba, Hot Honey, Pistachio Croissants and more on the map.">
 
+  <!-- SEO -->
+  <meta name="keywords"
+    content="trending food map, matcha cafe near me, smash burger, birria tacos, boba tea, hot honey, pistachio croissant, dubai chocolate, food trends 2025, trending restaurants USA">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://trendfoodusa.netlify.app/">
+  <meta property="og:title" content="Trend Food USA — Find Trending Food Near You">
+  <meta property="og:description"
+    content="Discover the hottest trending food spots across America. Matcha, Smash Burgers, Hot Honey, Dubai Chocolate and more — all on one map.">
+  <meta property="og:url" content="https://trendfoodusa.netlify.app/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Trend Food USA — Find Trending Food Near You">
+  <meta name="twitter:description" content="Discover the hottest trending food spots across America on one map.">
+
   <!-- Google Maps -->
   <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHMMMCUcx73k4wKHzvMnVy74qAS_CwUkQ&libraries=places&callback=initMap">
@@ -303,14 +317,32 @@
       opacity: 0.85;
     }
 
-    /* ══════════════════════════════
-       APP BODY
-    ══════════════════════════════ */
-    .app-body {
-      display: flex;
-      flex: 1;
-      min-height: 0;
-      overflow: hidden;
+    .about-btn {
+      flex-shrink: 0;
+      padding: 7px 13px;
+      background: transparent;
+      border: 1px solid #4a6844;
+      border-radius: 3px;
+      color: #8aac7e;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      text-decoration: none;
+      font-family: inherit;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .about-btn:hover {
+      border-color: var(--cream2);
+      color: var(--cream);
+    }
+
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
     }
 
     /* ══════════════════════════════
@@ -904,6 +936,7 @@
       <!-- ③ City / neighborhood search -->
       <input type="text" class="search-input" id="searchInput" placeholder="City, neighborhood, zip code…" />
       <button class="search-btn" onclick="searchLocation()">Go</button>
+      <a href="/about.html" class="about-btn">About</a>
 
     </div>
   </header>
@@ -967,7 +1000,8 @@
   <!-- ══════════════════ FOOTER ══════════════════ -->
   <footer>
     <span>© 2025 Trend Food USA</span>
-    <span><a href="/legal.html">Terms &amp; Privacy</a> · Powered by Google Places API</span>
+    <span><a href="/about.html">About</a> · <a href="/legal.html">Terms &amp; Privacy</a> · Powered by Google Places
+      API</span>
   </footer>
 
   <script>
@@ -979,8 +1013,6 @@
     let currentLabel = 'Matcha';
     let searchTimer, isSearching = false;
     let sheetOpen = false;
-    let isPanning   = false;
-    let isPanelOpen = false;
 
     const PIN_COLORS = {
       'matcha cafe': '#4caf50',
@@ -1053,7 +1085,6 @@
 
       service = new google.maps.places.PlacesService(map);
       map.addListener('idle', () => {
-        if (isPanning) return;
         clearTimeout(searchTimer);
         searchTimer = setTimeout(loadStores, 650);
       });
@@ -1073,12 +1104,10 @@
       if (!service || isSearching) return;
       isSearching = true;
       showLoading(true);
-      if (!isPanelOpen) {
-        closeDetail();
-        clearMarkers();
-        setList('<div class="loading"><div class="spinner"></div>Searching…</div>');
-        document.getElementById('sidebarCount').textContent = 'Searching…';
-      }
+      closeDetail();
+      clearMarkers();
+      setList('<div class="loading"><div class="spinner"></div>Searching…</div>');
+      document.getElementById('sidebarCount').textContent = 'Searching…';
 
       service.textSearch({ query: currentQuery, location: map.getCenter(), radius: 5000 },
         (results, status) => {
@@ -1086,24 +1115,14 @@
           showLoading(false);
           if (status === google.maps.places.PlacesServiceStatus.OK && results.length) {
             window._stores = results;
-            clearMarkers();
+            renderList(results);
             renderMarkers(results);
-            if (!isPanelOpen) {
-              renderList(results);
-            } else {
-              document.getElementById('sidebarCount').innerHTML =
-                `Found <strong>${results.length} spot${results.length !== 1 ? 's' : ''}</strong> in this area`;
-            }
           } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-            if (!isPanelOpen) {
-              setList('<div class="empty-msg">No spots found here.<br>Try a different area or category.</div>');
-              document.getElementById('sidebarCount').textContent = 'No results';
-            }
+            setList('<div class="empty-msg">No spots found here.<br>Try a different area or category.</div>');
+            document.getElementById('sidebarCount').textContent = 'No results';
           } else {
-            if (!isPanelOpen) {
-              setList(`<div class="error-msg">⚠️ Error (${status})<br>Check your Google Maps API key.</div>`);
-              document.getElementById('sidebarCount').textContent = 'Error';
-            }
+            setList(`<div class="error-msg">⚠️ Error (${status})<br>Check your Google Maps API key.</div>`);
+            document.getElementById('sidebarCount').textContent = 'Error';
           }
         }
       );
@@ -1176,12 +1195,7 @@
         el.classList.add('selected');
         el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
-      if (s.geometry?.location) {
-        isPanning = true;
-        map.panTo(s.geometry.location);
-        setTimeout(() => { isPanning = false; }, 800);
-      }
-      isPanelOpen = true;
+      if (s.geometry?.location) map.panTo(s.geometry.location);
 
       document.getElementById('detailCat').textContent = `${currentEmoji} ${currentLabel}`;
       document.getElementById('detailName').textContent = s.name;
@@ -1225,66 +1239,33 @@
       document.getElementById('detailPanel').classList.add('show');
     }
     function closeDetail() {
-      isPanelOpen = false;
       document.getElementById('detailPanel').classList.remove('show');
       document.querySelectorAll('.store-item').forEach(el => el.classList.remove('selected'));
     }
 
     /* ───────── NAVIGATION ───────── */
-    // Geocoder 대신 Places API만 사용 (별도 Geocoding API 활성화 불필요)
     function searchLocation() {
       const q = document.getElementById('searchInput').value.trim();
       if (!q) return;
-
-      // PlacesService.findPlaceFromQuery로 위치 검색
-      service.findPlaceFromQuery(
-        { query: q, fields: ['geometry', 'name', 'formatted_address'] },
-        (results, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK && results && results[0]?.geometry) {
-            const loc = results[0].geometry.location;
-            const vp  = results[0].geometry.viewport;
-            closeDetail();
-            clearMarkers();
-            if (vp) {
-              map.fitBounds(vp);
-            } else {
-              map.setCenter(loc);
-              map.setZoom(13);
-            }
-            loadStores();
-          } else {
-            // fallback: textSearch로 한번 더 시도
-            service.textSearch({ query: q + ' USA' }, (res2, st2) => {
-              if (st2 === google.maps.places.PlacesServiceStatus.OK && res2[0]?.geometry) {
-                const loc2 = res2[0].geometry.location;
-                closeDetail();
-                clearMarkers();
-                map.setCenter(loc2);
-                map.setZoom(13);
-                loadStores();
-              } else {
-                alert('Location not found.\nTry: "Los Angeles", "LA", "Brooklyn NY", or "90210"');
-              }
-            });
-          }
+      new google.maps.Geocoder().geocode({ address: q + ', USA' }, (res, st) => {
+        if (st === 'OK' && res[0]) {
+          map.setCenter(res[0].geometry.location);
+          map.setZoom(14);
+          loadStores();
+        } else {
+          alert('Location not found. Try "Austin, TX" or a zip code.');
         }
-      );
+      });
     }
-
     function goToState() {
       const val = document.getElementById('stateSelect').value;
       if (!val) return;
-      service.findPlaceFromQuery(
-        { query: val + ' state USA', fields: ['geometry'] },
-        (results, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK && results[0]?.geometry) {
-            const vp = results[0].geometry.viewport;
-            if (vp) map.fitBounds(vp);
-            else { map.setCenter(results[0].geometry.location); map.setZoom(7); }
-            setTimeout(loadStores, 400);
-          }
+      new google.maps.Geocoder().geocode({ address: val + ', USA' }, (res, st) => {
+        if (st === 'OK' && res[0]) {
+          map.fitBounds(res[0].geometry.viewport || res[0].geometry.bounds);
+          setTimeout(loadStores, 400);
         }
-      );
+      });
     }
     document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') searchLocation(); });
 

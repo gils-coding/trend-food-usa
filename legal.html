@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms & Privacy — Trend Food USA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Figtree:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --cream: #f5f0e8;
+      --cream2: #ede7d6;
+      --paper: #faf7f2;
+      --ink: #1a1208;
+      --ink2: #3d3322;
+      --muted: #9a8e7a;
+      --border: #d4c9b0;
+      --red: #c0392b;
+      --red2: #e74c3c;
+      --gold: #b8860b;
+    }
+
+    body {
+      font-family: 'Figtree', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.75;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #344a2e;
+      border-bottom: 3px solid var(--red);
+    }
+
+    .masthead-stripe {
+      height: 3px;
+      background: repeating-linear-gradient(to right, var(--red) 0, var(--red) 48px, var(--gold) 48px, var(--gold) 96px);
+    }
+
+    .masthead {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px 4px;
+      gap: 28px;
+    }
+
+    .logo {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      line-height: 1;
+      gap: 0;
+      flex-shrink: 0;
+    }
+
+    .logo-trend {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: var(--cream);
+      text-transform: uppercase;
+      line-height: 0.95;
+    }
+
+    .logo-food {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--cream);
+      letter-spacing: -1px;
+      line-height: 0.95;
+      position: relative;
+    }
+
+    .logo-usa {
+      position: absolute;
+      right: -14px;
+      bottom: -8px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .usa-u {
+      color: #e03030;
+    }
+
+    .usa-s {
+      color: #7dd8ff;
+      margin-left: 1.5px;
+    }
+
+    .usa-a {
+      color: #f5f5f5;
+      margin-left: 1.5px;
+    }
+
+    .masthead-rule {
+      width: 1px;
+      height: 32px;
+      background: #4a6844;
+      flex-shrink: 0;
+    }
+
+    .tagline {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #8aac7e;
+      white-space: nowrap;
+    }
+
+    .sub-header {
+      background: #2c3d28;
+      border-bottom: 1px solid #4a6844;
+      padding: 7px 20px;
+      font-size: 11px;
+      color: #6a8a60;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sub-header a {
+      color: #6a8a60;
+      text-decoration: none;
+    }
+
+    .sub-header a:hover {
+      color: var(--cream);
+    }
+
+    .sub-header .current {
+      color: var(--cream2);
+      font-weight: 600;
+    }
+
+    /* ── Container ── */
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── Tab nav ── */
+    .tab-nav {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 36px;
+    }
+
+    .tab-btn {
+      padding: 10px 22px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      letter-spacing: 0.3px;
+      transition: all 0.15s;
+    }
+
+    .tab-btn.active {
+      color: var(--red);
+      border-bottom-color: var(--red);
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* ── Doc styles ── */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      background: var(--red);
+      color: #fff;
+      border-radius: 3px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      transition: opacity 0.15s;
+    }
+
+    .back-btn:hover {
+      opacity: 0.85;
+    }
+
+    .doc-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .doc-date {
+      font-size: 11.5px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    .article {
+      margin-bottom: 32px;
+    }
+
+    .article-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      padding: 8px 14px;
+      background: var(--cream2);
+      border-left: 3px solid var(--red);
+      border-radius: 0 4px 4px 0;
+      margin-bottom: 12px;
+      letter-spacing: 0.2px;
+    }
+
+    .article-body {
+      font-size: 13.5px;
+      color: var(--ink2);
+      padding: 0 4px;
+    }
+
+    .article-body p {
+      margin-bottom: 10px;
+    }
+
+    .article-body ul {
+      padding-left: 20px;
+    }
+
+    .article-body ul li {
+      margin-bottom: 7px;
+    }
+
+    .article-body a {
+      color: var(--red);
+    }
+
+    .article-body strong {
+      color: var(--ink);
+    }
+
+    .highlight {
+      background: #fff8f5;
+      border: 1px solid #f0c0b0;
+      border-left: 3px solid var(--red);
+      border-radius: 0 4px 4px 0;
+      padding: 12px 16px;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #8a2010;
+      line-height: 1.6;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--ink);
+      border-top: 1px solid #2a2010;
+      padding: 16px 24px;
+      text-align: center;
+      font-size: 11px;
+      color: #4a4030;
+      margin-top: 40px;
+    }
+
+    footer a {
+      color: #4a4030;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--cream);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="masthead-stripe"></div>
+    <div class="masthead">
+      <a href="/" class="logo">
+        <span class="logo-trend">TREND</span>
+        <span class="logo-food">FOOD<span class="logo-usa"><span class="usa-u">U</span><span class="usa-s">S</span><span
+              class="usa-a">A</span></span></span>
+      </a>
+      <div class="masthead-rule"></div>
+      <span class="tagline">America's Food Trend Finder</span>
+    </div>
+  </header>
+
+  <div class="sub-header">
+    <a href="/">Home</a> <span>›</span> <span class="current">Terms &amp; Privacy</span>
+  </div>
+
+  <div class="container">
+    <a href="/" class="back-btn">← Back to Map</a>
+
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('terms', this)">Terms of Service</button>
+      <button class="tab-btn" onclick="switchTab('privacy', this)">Privacy Policy</button>
+      <button class="tab-btn" onclick="switchTab('ccpa', this)">California Rights (CCPA)</button>
+    </div>
+
+    <!-- ══════════ TERMS OF SERVICE ══════════ -->
+    <div class="section active" id="terms">
+      <div class="doc-title">Terms of Service</div>
+      <div class="doc-date">Effective Date: February 1, 2025</div>
+
+      <div class="article">
+        <div class="article-title">1. About This Service</div>
+        <div class="article-body">
+          <p>Trend Food USA ("we," "our," or "the Service") is a map-based web application that helps users discover
+            trending food and beverage establishments across the United States. The Service is provided free of charge
+            and does not require account registration.</p>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">2. Data Sources & Accuracy</div>
+        <div class="article-body">
+          <ul>
+            <li>Business listings, addresses, hours, and other place data are sourced from the <strong>Google Places
+                API</strong>.</li>
+            <li><strong>We do not guarantee the accuracy, completeness, or timeliness of any business
+                information.</strong> Hours, menus, locations, and operational status may differ from what is displayed.
+            </li>
+            <li>Always confirm details directly with the business before visiting.</li>
+          </ul>
+          <div class="highlight">⚠️ Place information shown on this site is for reference only and may not reflect
+            current conditions. Please verify with the business before your visit.</div>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">3. Limitation of Liability</div>
+        <div class="article-body">
+          <p>To the fullest extent permitted by applicable law, Trend Food USA and its operators shall not be liable for
+            any direct, indirect, incidental, or consequential damages arising from your use of the Service, including
+            but not limited to travel costs incurred based on inaccurate business information, or inability to access
+            the Service.</p>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">4. Third-Party Services</div>
+        <div class="article-body">
+          <p>This Service uses the following third-party platforms, each governed by their own terms:</p>
+          <ul>
+            <li><strong>Google Maps & Places API</strong> — <a href="https://policies.google.com/terms"
+                target="_blank">Google Terms of Service</a></li>
+            <li><strong>Google AdSense</strong> (advertising) — <a href="https://policies.google.com/terms"
+                target="_blank">Google Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">5. Intellectual Property</div>
+        <div class="article-body">
+          <p>You may not copy, reproduce, or commercially exploit any content or design elements of this Service without
+            prior written consent. Place data displayed through Google Places API is subject to Google's terms and may
+            not be scraped or redistributed.</p>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">6. Service Availability</div>
+        <div class="article-body">
+          <p>We reserve the right to modify, suspend, or discontinue the Service at any time without notice. We are not
+            liable for any interruption or discontinuation of service.</p>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">7. Governing Law</div>
+        <div class="article-body">
+          <p>These Terms shall be governed by and construed in accordance with the laws of the United States. Any
+            disputes shall be resolved in a court of competent jurisdiction.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ PRIVACY POLICY ══════════ -->
+    <div class="section" id="privacy">
+      <div class="doc-title">Privacy Policy</div>
+      <div class="doc-date">Effective Date: February 1, 2025</div>
+
+      <div class="article">
+        <div class="article-title">1. Overview</div>
+        <div class="article-body">
+          <p>Trend Food USA does not require account registration and does not directly collect personally identifiable
+            information (PII). However, certain data may be automatically collected through third-party services we use,
+            as described below.</p>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">2. Information Collected</div>
+        <div class="article-body">
+          <ul>
+            <li><strong>Location Data:</strong> If you grant permission, your device's approximate GPS coordinates are
+              used solely to center the map near you. This data is processed locally in your browser and is not
+              transmitted to or stored by us.</li>
+            <li><strong>Map Interaction Data:</strong> When you interact with the map (panning, zooming, searching), the
+              map center coordinates are sent to Google's servers to retrieve nearby place results. We do not store
+              these coordinates.</li>
+            <li><strong>Server Logs:</strong> Standard web server logs may record your IP address, browser type, and
+              pages visited. Logs are retained for up to 30 days for security and diagnostic purposes.</li>
+            <li><strong>Cookies & Advertising Identifiers:</strong> Google AdSense may set cookies to serve personalized
+              advertisements based on your browsing behavior.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">3. How We Use Information</div>
+        <div class="article-body">
+          <ul>
+            <li>To display nearby trending food establishments on the map</li>
+            <li>To improve service performance and diagnose technical issues</li>
+            <li>To serve relevant advertisements through Google AdSense</li>
+          </ul>
+          <p>We do not sell your personal information to third parties.</p>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">4. Third-Party Data Processors</div>
+        <div class="article-body">
+          <ul>
+            <li><strong>Google Maps Platform:</strong> Processes map tile requests and place search queries. See <a
+                href="https://policies.google.com/privacy" target="_blank">Google Privacy Policy</a>.</li>
+            <li><strong>Google AdSense:</strong> May collect browsing data to serve targeted ads. You can opt out at <a
+                href="https://adssettings.google.com" target="_blank">adssettings.google.com</a>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">5. Cookies</div>
+        <div class="article-body">
+          <p>This site uses cookies primarily through Google AdSense. You may disable cookies in your browser settings,
+            though this may affect ad personalization. To opt out of personalized ads by Google, visit <a
+              href="https://adssettings.google.com" target="_blank">adssettings.google.com</a>.</p>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">6. Children's Privacy</div>
+        <div class="article-body">
+          <p>This Service is not directed to children under the age of 13. We do not knowingly collect personal
+            information from children. If you believe a child has provided us with personal information, please contact
+            us.</p>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">7. Changes to This Policy</div>
+        <div class="article-body">
+          <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated
+            effective date. Continued use of the Service after changes constitutes acceptance of the revised policy.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ CCPA ══════════ -->
+    <div class="section" id="ccpa">
+      <div class="doc-title">California Consumer Privacy Rights</div>
+      <div class="doc-date">Effective Date: February 1, 2025 · Applies to California Residents</div>
+
+      <div class="article">
+        <div class="article-title">Your Rights Under CCPA</div>
+        <div class="article-body">
+          <p>If you are a California resident, the California Consumer Privacy Act (CCPA) grants you the following
+            rights:</p>
+          <ul>
+            <li><strong>Right to Know:</strong> You may request information about what personal data we have collected
+              about you, how it was collected, and how it has been used or shared.</li>
+            <li><strong>Right to Delete:</strong> You may request deletion of personal information we have collected
+              about you, subject to certain exceptions.</li>
+            <li><strong>Right to Opt-Out of Sale:</strong> We do not sell personal information. However, Google AdSense
+              may share data with advertising partners. You can opt out via <a href="https://adssettings.google.com"
+                target="_blank">Google Ad Settings</a>.</li>
+            <li><strong>Right to Non-Discrimination:</strong> We will not discriminate against you for exercising your
+              CCPA rights.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">Categories of Information Collected</div>
+        <div class="article-body">
+          <ul>
+            <li><strong>Identifiers:</strong> IP address (via server logs, retained up to 30 days)</li>
+            <li><strong>Geolocation Data:</strong> Approximate location, only if you grant browser permission —
+              processed locally, not stored by us</li>
+            <li><strong>Internet Activity:</strong> Pages visited, browser type (via server logs)</li>
+            <li><strong>Advertising Data:</strong> Collected by Google AdSense — governed by Google's Privacy Policy
+            </li>
+          </ul>
+          <div class="highlight">📋 We do not sell your personal information to any third party.</div>
+        </div>
+      </div>
+
+      <div class="article">
+        <div class="article-title">How to Exercise Your Rights</div>
+        <div class="article-body">
+          <p>To submit a CCPA request, please contact us by email. We will respond within 45 days as required by law.
+          </p>
+          <ul>
+            <li>To opt out of Google personalized ads: <a href="https://adssettings.google.com"
+                target="_blank">adssettings.google.com</a></li>
+            <li>To opt out via the NAI (Network Advertising Initiative): <a href="https://optout.networkadvertising.org"
+                target="_blank">optout.networkadvertising.org</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer>
+    <span>© 2025 Trend Food USA</span>
+    <span><a href="/">Map</a> · <a href="/about.html">About</a> · Powered by Google Places API</span>
+  </footer>
+
+  <script>
+    function switchTab(id, btn) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+
+</html>
